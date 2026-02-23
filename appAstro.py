@@ -7,9 +7,7 @@ st.title("🐉 Module de Prédiction - Rêve de Dragon")
 # ==============================
 # DONNÉES DES CARTES
 # ==============================
-
 cartes = {
-
     # BÉNÉFIQUES
     "Le Luth": {"type":"Bénéfique","effet_principal":"Une mélodie onirique soigne les blessures et apaise les esprits.",
                 "effet_comp":"+2 Musique ou +1 Chant","effet_attr":"+2 OUIE, +1 RÊVE"},
@@ -60,7 +58,15 @@ cartes = {
 liste_cartes = list(cartes.keys())
 
 # ==============================
-# INITIALISATION SESSION
+# CRÉATION LISTE VISUELLE AVEC EMOJIS
+# ==============================
+liste_cartes_visuelle = []
+for carte in liste_cartes:
+    prefix = "✅" if cartes[carte]["type"] == "Bénéfique" else "⚠️"
+    liste_cartes_visuelle.append(f"{prefix} {carte}")
+
+# ==============================
+# SESSION STATE
 # ==============================
 if "tirage_fait" not in st.session_state:
     st.session_state.tirage_fait = False
@@ -72,21 +78,23 @@ if "mixte" not in st.session_state:
 # ==============================
 # SÉLECTION CARTES
 # ==============================
-c1 = st.selectbox("Première carte", liste_cartes)
-c2 = st.selectbox("Seconde carte", liste_cartes, index=1)
+c1_visu = st.selectbox("Première carte", liste_cartes_visuelle)
+c2_visu = st.selectbox("Seconde carte", liste_cartes_visuelle, index=1)
+
+# Récupérer nom réel des cartes
+c1 = c1_visu.split(" ", 1)[1]
+c2 = c2_visu.split(" ", 1)[1]
 
 if st.button("Tirer les cartes"):
     type1 = cartes[c1]["type"]
     type2 = cartes[c2]["type"]
 
     if type1 == type2:
-        # Tirage homogène → effet directement
         carte = random.choice([c1, c2])
         st.session_state.carte_resultat = carte
         st.session_state.mixte = False
         st.session_state.tirage_fait = True
     else:
-        # Tirage mixte → activer choix jet de Chance
         st.session_state.mixte = True
         st.session_state.tirage_fait = True
 
@@ -95,10 +103,8 @@ if st.button("Tirer les cartes"):
 # ==============================
 if st.session_state.tirage_fait and st.session_state.mixte:
     st.warning("Tirage mixte : faites un jet de CHANCE à 0.")
-    # Le selectbox avec key gère session_state automatiquement
     st.selectbox("Résultat du jet de Chance", ["Réussi", "Raté"], key="jet_chance")
 
-    # Récupération de la valeur
     if "jet_chance" in st.session_state:
         jet_chance_val = st.session_state.jet_chance
         if jet_chance_val == "Réussi":
@@ -119,9 +125,6 @@ if st.session_state.carte_resultat:
     st.write("Compétences :", effet["effet_comp"])
     st.write("Attributs :", effet["effet_attr"])
 
-    # ==============================
-    # JET RÊVE / ASTROLOGIE
-    # ==============================
     st.subheader("🔮 Jet Pts de RÊVE / Astrologie à -Dr7")
     jet_duree = st.selectbox(
         "Résultat du jet",
