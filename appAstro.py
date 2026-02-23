@@ -61,7 +61,7 @@ liste_cartes = list(cartes.keys())
 # ==============================
 # CHARGER LES EFFETS SUPPLÉMENTAIRES DU CSV
 # ==============================
-df_csv = pd.read_csv("Le Tarot.csv", index_col=0)  # première colonne = carte ligne
+df_csv = pd.read_csv("Le tarot.csv", index_col=0)  # première colonne = carte ligne
 # créer un dictionnaire tirages[(carte1, carte2)] = effet supplémentaire
 tirages_csv = {}
 for ligne in df_csv.index:
