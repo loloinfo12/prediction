@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 import random
 
 st.set_page_config(page_title="Rêve de Dragon - Module de Prédiction", layout="centered")
@@ -58,7 +59,19 @@ cartes = {
 liste_cartes = list(cartes.keys())
 
 # ==============================
-# CRÉATION LISTE VISUELLE AVEC EMOJIS
+# CHARGER LES EFFETS SUPPLÉMENTAIRES DU CSV
+# ==============================
+df_csv = pd.read_csv("effets_supplementaires.csv", index_col=0)  # première colonne = carte ligne
+# créer un dictionnaire tirages[(carte1, carte2)] = effet supplémentaire
+tirages_csv = {}
+for ligne in df_csv.index:
+    for colonne in df_csv.columns:
+        effet = df_csv.loc[ligne, colonne]
+        if isinstance(effet, str) and effet.strip() != "":
+            tirages_csv[(ligne, colonne)] = effet.strip()
+
+# ==============================
+# AJOUT DES EMOJIS POUR VISUALISER BÉNÉFIQUE / MALÉFIQUE
 # ==============================
 liste_cartes_visuelle = []
 for carte in liste_cartes:
@@ -76,15 +89,18 @@ if "mixte" not in st.session_state:
     st.session_state.mixte = False
 
 # ==============================
-# SÉLECTION CARTES
+# SÉLECTION DES CARTES
 # ==============================
 c1_visu = st.selectbox("Première carte", liste_cartes_visuelle)
 c2_visu = st.selectbox("Seconde carte", liste_cartes_visuelle, index=1)
 
-# Récupérer nom réel des cartes
+# Récupérer le nom réel
 c1 = c1_visu.split(" ", 1)[1]
 c2 = c2_visu.split(" ", 1)[1]
 
+# ==============================
+# TIRAGE
+# ==============================
 if st.button("Tirer les cartes"):
     type1 = cartes[c1]["type"]
     type2 = cartes[c2]["type"]
@@ -99,7 +115,7 @@ if st.button("Tirer les cartes"):
         st.session_state.tirage_fait = True
 
 # ==============================
-# JET DE CHANCE (si mixte)
+# JET DE CHANCE SI MIXTE
 # ==============================
 if st.session_state.tirage_fait and st.session_state.mixte:
     st.warning("Tirage mixte : faites un jet de CHANCE à 0.")
@@ -121,10 +137,16 @@ if st.session_state.carte_resultat:
     effet = cartes[carte]
 
     st.markdown(f"### Effet {effet['type']}")
-    st.write(effet["effet_principal"])
-    st.write("Compétences :", effet["effet_comp"])
-    st.write("Attributs :", effet["effet_attr"])
+    st.write("**Effet principal :**", effet["effet_principal"])
+    st.write("**Compétences :**", effet["effet_comp"])
+    st.write("**Attributs :**", effet["effet_attr"])
 
+    # Ajouter un effet supplémentaire depuis le CSV si disponible
+    effet_csv = tirages_csv.get((c1, c2)) or tirages_csv.get((c2, c1))
+    if effet_csv:
+        st.info("💡 Effet supplémentaire : " + effet_csv)
+
+    # Jet RÊVE / Astrologie pour la durée
     st.subheader("🔮 Jet Pts de RÊVE / Astrologie à -Dr7")
     jet_duree = st.selectbox(
         "Résultat du jet",
