@@ -10,10 +10,71 @@ st.title("🐉 Module de Prédiction - Rêve de Dragon")
 # ==============================
 
 cartes = {
-    "Le Luth": {"type":"Bénéfique","effet_principal":"Une mélodie onirique soigne les blessures.",
-                "effet_comp":"+2 Musique","effet_attr":"+2 OUIE"},
-    "Les Marais": {"type":"Maléfique","effet_principal":"Les pas s’enlisent.",
-                   "effet_comp":"-1 Survie (Marais)","effet_attr":"-1 AGILITÉ"},
+
+    # BÉNÉFIQUES
+    "Le Luth": {"type":"Bénéfique","effet_principal":"Une mélodie onirique soigne les blessures et apaise les esprits.",
+                "effet_comp":"+2 Musique ou +1 Chant","effet_attr":"+2 OUIE, +1 RÊVE"},
+
+    "Le Coffre": {"type":"Bénéfique","effet_principal":"Un trésor ou un objet utile se révèle.",
+                  "effet_comp":"+1 Commerce ou +1 Orfèvrerie","effet_attr":"+1 INTELLECT, +1 CHANCE"},
+
+    "La Licorne": {"type":"Bénéfique","effet_principal":"Une aura de pureté protège le personnage.",
+                   "effet_comp":"+1 Vigilance","effet_attr":"+1 CONSTITUTION, +1 EMPATHIE"},
+
+    "Le Haut Rêvant": {"type":"Bénéfique","effet_principal":"Une vision prophétique éclaire l’esprit.",
+                       "effet_comp":"+1 Oniros","effet_attr":"+1 RÊVE, +1 VOLONTÉ"},
+
+    "Le Grimoire": {"type":"Bénéfique","effet_principal":"Un savoir oublié devient accessible.",
+                    "effet_comp":"+1 Narcos ou +1 Thanatos","effet_attr":"+1 INTELLECT, +1 VOLONTÉ"},
+
+    "La Vierge": {"type":"Bénéfique","effet_principal":"Une bénédiction de pureté et de chance.",
+                  "effet_comp":"+1 Séduction","effet_attr":"+1 EMPATHIE, +1 CHANCE"},
+
+    "La Couronne": {"type":"Bénéfique","effet_principal":"Autorité et charisme se renforcent.",
+                    "effet_comp":"+1 Commerce","effet_attr":"+1 APPARENCE, +1 INTELLECT"},
+
+    "Le Soleil": {"type":"Bénéfique","effet_principal":"La lumière dissipe ombres et malédictions.",
+                  "effet_comp":"+1 Survie (Forêts)","effet_attr":"+1 VUE, +1 RÊVE"},
+
+    "Le Vaisseau": {"type":"Bénéfique","effet_principal":"Le voyage devient sûr et favorable.",
+                    "effet_comp":"+1 Navigation","effet_attr":"+1 AGILITÉ, +1 INTELLECT"},
+
+    "Le Voyageur": {"type":"Bénéfique","effet_principal":"Un allié providentiel apparaît.",
+                    "effet_comp":"+1 Survie (Extérieur)","effet_attr":"+1 VOLONTÉ, +1 EMPATHIE"},
+
+    "L’Auberge": {"type":"Bénéfique","effet_principal":"Repos réparateur et chaleur humaine.",
+                  "effet_comp":"+1 Médecine ou +1 Cuisine","effet_attr":"+1 CONSTITUTION, +1 ODORAT-GOÛT"},
+
+    # MALÉFIQUES
+    "Les Marais": {"type":"Maléfique","effet_principal":"Les pas s’enlisent dans la brume stagnante.",
+                   "effet_comp":"-1 Survie (Marais)","effet_attr":"-1 AGILITÉ, -1 VUE"},
+
+    "Le Rabot": {"type":"Maléfique","effet_principal":"Les outils et armes se fragilisent.",
+                 "effet_comp":"-1 Métallurgie","effet_attr":"-1 FORCE, -1 DEXTÉRITÉ"},
+
+    "L’Esprit Thanataire": {"type":"Maléfique","effet_principal":"Des visions de mort troublent l’âme.",
+                            "effet_comp":"-1 Oniros","effet_attr":"-1 VOLONTÉ, -1 RÊVE"},
+
+    "La Sébile": {"type":"Maléfique","effet_principal":"La chance se détourne.",
+                  "effet_comp":"-1 Commerce","effet_attr":"-1 CHANCE, -1 EMPATHIE"},
+
+    "Le Groin": {"type":"Maléfique","effet_principal":"Une créature brutale attaque.",
+                 "effet_comp":"-1 Corps à corps","effet_attr":"-1 FORCE, -1 AGILITÉ"},
+
+    "L’Épée": {"type":"Maléfique","effet_principal":"Un conflit éclate soudainement.",
+               "effet_comp":"-1 Epées à 1 main","effet_attr":"-1 FORCE, -1 VOLONTÉ"},
+
+    "Le Gibet": {"type":"Maléfique","effet_principal":"Une aura de peur s’installe.",
+                 "effet_comp":"-1 Séduction","effet_attr":"-1 VOLONTÉ, -1 EMPATHIE"},
+
+    "La Lune": {"type":"Maléfique","effet_principal":"La folie nocturne trouble les esprits.",
+                "effet_comp":"-1 Hypnos","effet_attr":"-1 RÊVE, -1 VOLONTÉ"},
+
+    "Le Château": {"type":"Maléfique","effet_principal":"Un lieu hostile piège les héros.",
+                   "effet_comp":"-1 Navigation","effet_attr":"-1 INTELLECT, -1 AGILITÉ"},
+
+    "La Déchirure": {"type":"Maléfique","effet_principal":"Une faille onirique s’ouvre.",
+                     "effet_comp":"-1 Survie (Extérieur)","effet_attr":"-1 VOLONTÉ, -1 INTELLECT"},
 }
 
 liste_cartes = list(cartes.keys())
