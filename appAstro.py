@@ -2,13 +2,11 @@ import streamlit as st
 import random
 
 st.set_page_config(page_title="Rêve de Dragon - Module de Prédiction")
-
 st.title("🐉 Module de Prédiction - Rêve de Dragon")
 
 # ==============================
-# DONNÉES
+# DONNÉES CARTES
 # ==============================
-
 cartes = {
 
     # BÉNÉFIQUES
@@ -80,48 +78,57 @@ cartes = {
 liste_cartes = list(cartes.keys())
 
 # ==============================
-# INITIALISATION SESSION
+# SESSION STATE
 # ==============================
-
+if "tirage_fait" not in st.session_state:
+    st.session_state.tirage_fait = False
 if "carte_resultat" not in st.session_state:
     st.session_state.carte_resultat = None
-
-if "effet_type" not in st.session_state:
-    st.session_state.effet_type = None
+if "mixte" not in st.session_state:
+    st.session_state.mixte = False
+if "jet_chance" not in st.session_state:
+    st.session_state.jet_chance = None
 
 # ==============================
-# SÉLECTION
+# SÉLECTION CARTES
 # ==============================
-
 c1 = st.selectbox("Première carte", liste_cartes)
 c2 = st.selectbox("Seconde carte", liste_cartes, index=1)
 
 if st.button("Tirer les cartes"):
-
     type1 = cartes[c1]["type"]
     type2 = cartes[c2]["type"]
 
     if type1 == type2:
+        # Tirage homogène → effet directement
         carte = random.choice([c1, c2])
+        st.session_state.carte_resultat = carte
+        st.session_state.mixte = False
+        st.session_state.tirage_fait = True
     else:
-        st.warning("Tirage mixte : faites un jet de Chance.")
-        jet = st.selectbox("Jet de Chance", ["Réussi", "Raté"])
-
-        if jet == "Réussi":
-            carte = c1 if cartes[c1]["type"] == "Bénéfique" else c2
-        else:
-            carte = c1 if cartes[c1]["type"] == "Maléfique" else c2
-
-    # On stocke le résultat
-    st.session_state.carte_resultat = carte
-    st.session_state.effet_type = cartes[carte]["type"]
+        # Tirage mixte → demander jet de chance
+        st.session_state.mixte = True
+        st.session_state.tirage_fait = True
 
 # ==============================
-# AFFICHAGE PERSISTANT
+# JET DE CHANCE (si mixte)
 # ==============================
+if st.session_state.tirage_fait and st.session_state.mixte:
+    st.warning("Tirage mixte : faites un jet de CHANCE à 0.")
 
+    jet_chance = st.selectbox("Résultat du jet de Chance", ["Réussi", "Raté"], key="jet_chance")
+    st.session_state.jet_chance = jet_chance
+
+    if st.session_state.jet_chance:
+        # Déterminer quelle carte s'applique
+        carte = c1 if (cartes[c1]["type"] == "Bénéfique" and st.session_state.jet_chance == "Réussi") \
+                    or (cartes[c1]["type"] == "Maléfique" and st.session_state.jet_chance == "Raté") else c2
+        st.session_state.carte_resultat = carte
+
+# ==============================
+# AFFICHAGE DE L'EFFET
+# ==============================
 if st.session_state.carte_resultat:
-
     carte = st.session_state.carte_resultat
     effet = cartes[carte]
 
@@ -130,11 +137,14 @@ if st.session_state.carte_resultat:
     st.write("Compétences :", effet["effet_comp"])
     st.write("Attributs :", effet["effet_attr"])
 
-    st.subheader("🔮 Jet RÊVE / Astrologie à -Dr7")
-
+    # ==============================
+    # JET RÊVE / ASTROLOGIE
+    # ==============================
+    st.subheader("🔮 Jet Pts de RÊVE / Astrologie à -Dr7")
     jet_duree = st.selectbox(
         "Résultat du jet",
-        ["Échec", "Normal", "Significative", "Particulière", "Double Particulière", "01"]
+        ["Échec", "Normal", "Significative", "Particulière", "Double Particulière", "01"],
+        key="jet_duree"
     )
 
     table_duree = {
